@@ -59,9 +59,19 @@ export class QueueService<I> {
     return this.queue;
   }
 
-  next(): void { }
+  next(): void {
+    if (this.current < this.queue.length - 1) {
+      this.setCurrent(this.current + 1);
+      this.play();
+    }
+  }
 
-  previous(): void { }
+  previous(): void {
+    if (this.current > 0) {
+      this.setCurrent(this.current - 1);
+      this.play();
+    }
+  }
 
   play(): void {
     if (this.queue.length > 0) {
@@ -72,15 +82,21 @@ export class QueueService<I> {
   stop(): void {
     this.onStop();
   }
-  
-  setCurrent(index: number): void { }
+
+  setCurrent(index: number): void {
+    if (this.queue.length > this.current) {
+      this.current = index;
+      this.play();
+    }
+
+  }
 
   getCurrentIndex(): number {
     return 0;
   }
 
   getCurrentItem(): I {
-    return null;
+    return this.queue[this.current];
   }
 
   getItemAt(index: number): I {
