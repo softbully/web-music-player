@@ -56,7 +56,7 @@ describe('Queue Service', () => {
     let queue: QueueService<any> = createQueueService();
 
     queue.play();
-    
+
     expect(queue.isPlaying()).toEqual(false);
   }));
 
@@ -104,6 +104,91 @@ describe('Queue Service', () => {
     expect(queue.isPlaying()).toEqual(true);
   }));
 
+  it(`should return correct current item`, async(() => {
+    let queue: QueueService<any> = createQueueService();
+    let item1: string = "item 1";
+
+    queue.add(item1);
+
+    expect(queue.getCurrentItem()).toEqual(item1);
+  }));
+
+  it(`should update current item correctly`, async(() => {
+    let queue: QueueService<any> = createQueueService();
+    let item1: string = "item 1";
+    let item2: string = "item 2";
+
+    queue.add(item1);
+    queue.add(item2);
+        
+    expect(queue.getCurrentItem()).toEqual(item1);
+    queue.setCurrent(1);
+    expect(queue.getCurrentItem()).toEqual(item2);
+  }));
+
+  it(`should go to next on next`, async(() => {
+    let queue: QueueService<any> = createQueueService();
+    let item1: string = "item 1";
+    let item2: string = "item 2";
+
+    queue.add(item1);
+    queue.add(item2);
+    
+    expect(queue.getCurrentItem()).toEqual(item1);
+    queue.next();
+    expect(queue.getCurrentItem()).toEqual(item2);
+  }));
+
+  it(`should go to previous on previous`, async(() => {
+    let queue: QueueService<any> = createQueueService();
+    let item1: string = "item 1";
+    let item2: string = "item 2";
+
+    queue.add(item1);
+    queue.add(item2);
+    queue.setCurrent(1);
+    
+    expect(queue.getCurrentItem()).toEqual(item2);
+    queue.previous();
+    expect(queue.getCurrentItem()).toEqual(item1);
+  }));
+
+  it(`should start playing on set current`, async(() => {
+    let queue: QueueService<any> = createQueueService();
+
+    queue.add("item1");
+    queue.add("item2");
+    queue.stop();
+    
+    expect(queue.isPlaying()).toEqual(false);
+    queue.setCurrent(1);
+    expect(queue.isPlaying()).toEqual(true);
+  }));
+
+  it(`should start playing on previous`, async(() => {
+    let queue: QueueService<any> = createQueueService();
+
+    queue.add("item1");
+    queue.add("item2");
+    queue.setCurrent(1);
+    queue.stop();
+    
+    expect(queue.isPlaying()).toEqual(false);
+    queue.previous();
+    expect(queue.isPlaying()).toEqual(true);
+  }));
+
+  it(`should start playing on next`, async(() => {
+    let queue: QueueService<any> = createQueueService();
+
+    queue.add("item1");
+    queue.add("item2");
+    queue.stop();
+    
+    expect(queue.isPlaying()).toEqual(false);
+    queue.next();
+    expect(queue.isPlaying()).toEqual(true);
+  }));
 
 });
 
