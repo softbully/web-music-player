@@ -1,12 +1,15 @@
+import { Injectable } from '@angular/core'
 import { Http, Response } from '@angular/http';
 import { Headers, RequestOptions } from '@angular/http';
 
 import '../rxjs-operators';
 
 import { Account } from './account';
+
 /**
  * Login Service
  */
+@Injectable()
 export class LoginService
 {
     loggedIn: boolean;
@@ -23,7 +26,7 @@ export class LoginService
         let headers = new Headers({ 'Authorization': user + ":" + password });
         let options = new RequestOptions({ headers: headers });
 
-        return this.http.get("http://api.kitee.ca/" + "Authorizations")
+        return this.http.get("http://api.kitee.ca/" + "Authorizations", options)
             .map((data) => data.json())
             .catch(null)
             .subscribe((data: Account[]) =>

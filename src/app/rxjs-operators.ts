@@ -4,7 +4,7 @@
 
  // Statics
 import 'rxjs/add/observable/throw';
-import 'rxjs/add/observable';
+//import 'rxjs/add/observable';
 
 // Operators
 import 'rxjs/add/operator/catch';

@@ -11,7 +11,10 @@ import
     XHRBackend,
     ResponseOptions,
     Response,
-    RequestMethod
+    RequestMethod,
+    Http,
+    Headers,
+    Request
 } from '@angular/http';
 import
 {
@@ -41,23 +44,25 @@ describe('Login Service', () =>
         });
     });
 
-//    it(`should set authoriation header`, fakeAsync(
-//        inject([
-//            XHRBackend,
-//            LoginService
-//        ], (mockBackend: XHRBackend, loginService: LoginService) =>
-//            {
-//            let mb: MockBackend = null;
-//            mb.connections;
-//            
-//                mockBackend.connections.subscribe(
-//                    (connection: MockConnection) =>
-//                    {
-//                        expect(connection.request.headers.get("Authorizarion")).toBe("user:xxx");
-//                    });
-//
-//                loginService.login('user', 'xxx', null, null);
-//
-//            })
-//    ));
+    it(`should set authoriation header`, fakeAsync(
+        inject([
+            XHRBackend,
+            LoginService
+        ], (mockBackend: MockBackend, loginService: LoginService) =>
+            {
+                mockBackend.connections.subscribe(
+                    (connection: MockConnection) =>
+                    {
+                        expect(connection.request.headers.get('Authorization')).toBe("user:xxx");
+                        connection.mockRespond(new Response(new ResponseOptions({ body: ['xxx'] })));
+                    });
+
+                loginService.login(
+                    'user',
+                    'xxx',
+                    () => console.log('success'),
+                    () => console.log('error')
+                );
+            })
+    ));
 });
