@@ -2,23 +2,17 @@ import
 {
     fakeAsync,
     inject,
-    TestBed,
-    tick,
-    async
+    TestBed
 } from '@angular/core/testing';
 import
 {
-    HttpModule,
     ConnectionBackend,
     XHRBackend,
     ResponseOptions,
     Response,
-    RequestMethod,
     Http,
-    Headers,
-    Request,
     RequestOptions,
-    RequestOptionsArgs
+    BaseRequestOptions
 } from '@angular/http';
 import
 {
@@ -27,19 +21,6 @@ import
 } from '@angular/http/testing/mock_backend';
 
 import { Observable } from 'rxjs/Observable';
-
-/* from HttpModule */
-import { BrowserXhr, BaseRequestOptions, BaseResponseOptions, XSRFStrategy, CookieXSRFStrategy } from '@angular/http';
-
-export function _createDefaultCookieXSRFStrategy()
-{
-    return new CookieXSRFStrategy();
-}
-
-export function httpFactory(xhrBackend, requestOptions)
-{
-    return new MockSecuredHttpService(xhrBackend, requestOptions);
-}
 
 /**
  * Unit test for LoginService
@@ -53,18 +34,23 @@ export class MockSecuredHttpService extends Http implements SecuredHttp
     authorizationToken: string;
 }
 
+export function httpFactory(xhrBackend, requestOptions)
+{
+    return new MockSecuredHttpService(xhrBackend, requestOptions);
+}
+
 describe('Login Service', () =>
 {
     beforeEach(() =>
     {
         TestBed.configureTestingModule({
             providers: [
-                { provide: SecuredHttp, useFactory: httpFactory, deps: [XHRBackend, RequestOptions] },
-                BrowserXhr,
-                { provide: RequestOptions, useClass: BaseRequestOptions },
-                { provide: ResponseOptions, useClass: BaseResponseOptions },
-                XHRBackend,
-                { provide: XSRFStrategy, useFactory: _createDefaultCookieXSRFStrategy },
+                { provide: SecuredHttp, 
+                    useFactory: httpFactory, 
+                    deps: [XHRBackend, RequestOptions] },
+                { 
+                    provide: RequestOptions, 
+                    useClass: BaseRequestOptions },
                 {
                     provide: XHRBackend,
                     useClass: MockBackend
@@ -78,7 +64,7 @@ describe('Login Service', () =>
         });
     });
 
-    it(`should set authoriation header`, fakeAsync(
+    it(`should set authoriation header on Authorizations server call`, fakeAsync(
         inject([
             XHRBackend,
             LoginService
@@ -94,7 +80,6 @@ describe('Login Service', () =>
                         expect(connection.request.headers.get('Authorization')).toBe("user:xxx");
                         connection.mockRespond(new Response(new ResponseOptions({ body: ['xxx'] })));
                     });
-
 
                 loginService.login(
                     'user',
