@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core'
-import { Http, Response } from '@angular/http';
-import { Headers, RequestOptions } from '@angular/http';
+import { Response, Http, Headers, RequestOptions } from '@angular/http';
 
 import '../rxjs-operators';
 
+import { SecuredHttp } from './secured-http';
 import { Account } from './account';
 
 /**
@@ -15,7 +15,7 @@ export class LoginService
     loggedIn: boolean;
     token: string;
 
-    constructor(private http: Http) { }
+    constructor(private http: SecuredHttp) { }
 
     public login(
         user: string,
@@ -33,10 +33,9 @@ export class LoginService
             {
                 this.loggedIn = true;
                 this.token = data[0].token;
-                //    //TODO Use account id instead of token. Token will change.
-                //    $http.defaults.headers.common.Authorization = token;
+                this.http.authorizationToken = this.token;
+
                 success(this.token);
             });
-
     }
 }
