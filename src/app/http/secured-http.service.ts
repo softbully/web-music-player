@@ -1,31 +1,39 @@
-//import { Injectable } from '@angular/core';
-//import { Http, XHRBackend } from '@angular/http';
-//import { Headers, RequestOptions, RequestOptionsArgs, Response } from '@angular/http';
-//
-//import { Observable } from 'rxjs/Observable';
-//
-//@Injectable()
-//export class SecuredHttpService extends Http
-//{
-//    authorizationToken: string = "";
-//
-//    constructor(backend: XHRBackend, options: RequestOptions)
-//    {
-//        super(backend, options);
-//    }
-//
-//    request(url: string, options?: RequestOptionsArgs): Observable<Response>
-//    {
-//        if (options)
-//        {
-//            options.headers.append('Authorization', this.authorizationToken);
-//        } else
-//        {
-//            let headers = new Headers({ 'Authorization': this.authorizationToken });
-//            let options = new RequestOptions({ headers: headers });
-//        }
-//
-//        return super.request(url, options);
-//    };
-//
-//}
+import { Injectable } from '@angular/core';
+import { Http, XHRBackend, Request } from '@angular/http';
+import { Headers, RequestOptions, RequestOptionsArgs, Response } from '@angular/http';
+
+import { Observable } from 'rxjs/Observable';
+
+/**
+ * This injectable service will intercept every http request and add an authorizarion token to it's header.
+ * 
+ * It will work for the 'get', 'post', 'put', 'delete', 'patch' and 'head' methods.
+ * It will not work for a direct 'request' method call.
+ */
+@Injectable()
+export class SecuredHttpService extends Http
+{
+    authorizationToken: string;
+
+    constructor(backend: XHRBackend, options: RequestOptions)
+    {
+        super(backend, options);
+    }
+
+    private addAuthorizationHeader(request: Request): Request
+    {
+        request.headers.append('Authorization', this.authorizationToken);
+        return request;
+    }
+
+    request(url: Request, options?: RequestOptionsArgs): Observable<Response>
+    {
+        if (!(url instanceof Request))
+        {
+            throw Error('Calling request with the first parameter as a string url is not supported.');
+        }
+
+        return super.request(this.addAuthorizationHeader(url), options);
+
+    }
+}
