@@ -27,11 +27,6 @@ import
 import { RequestOptions } from '@angular/http';
 
 
-export function httpFactory(xhrBackend, requestOptions)
-{
-    return new SecuredHttpService(xhrBackend, requestOptions);
-}
-
 /**
  * Unit test for SecuredHttp
  */
@@ -50,7 +45,7 @@ describe('Secured Http', () =>
             providers: [
                 {
                     provide: Http,
-                    useFactory: httpFactory,
+                    useClass: SecuredHttpService,
                     deps: [XHRBackend, RequestOptions]
                 },
                 {

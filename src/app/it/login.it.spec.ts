@@ -5,10 +5,6 @@ import { Http, XHRBackend, ConnectionBackend, RequestOptions, BaseRequestOptions
 import { SecuredHttp } from '../login/secured-http';
 import { SecuredHttpService } from '../http/secured-http.service';
 
-export function httpFactory(xhrBackend, requestOptions) {
-  return new SecuredHttpService(xhrBackend, requestOptions);
-}
-
 describe('web-music-player App', function () {
 
   beforeEach(() => {
@@ -17,12 +13,12 @@ describe('web-music-player App', function () {
         LoginService,
         {
           provide: SecuredHttp,
-          useFactory: httpFactory,
+          useClass: SecuredHttpService,
           deps: [XHRBackend, RequestOptions]
         },
         {
           provide: Http,
-          useFactory: httpFactory,
+          useClass: SecuredHttpService,
           deps: [XHRBackend, RequestOptions]
         },
         {

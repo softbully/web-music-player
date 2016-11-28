@@ -34,17 +34,13 @@ export class MockSecuredHttpService extends Http implements SecuredHttp {
     };
 }
 
-export function httpFactory(xhrBackend, requestOptions) {
-    return new MockSecuredHttpService(xhrBackend, requestOptions);
-}
-
 describe('Login Service', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [
                 {
                     provide: SecuredHttp,
-                    useFactory: httpFactory,
+                    useClass: MockSecuredHttpService,
                     deps: [XHRBackend, RequestOptions]
                 },
                 {
