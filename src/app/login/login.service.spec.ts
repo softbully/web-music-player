@@ -1,11 +1,9 @@
-import
-{
+import {
     fakeAsync,
     inject,
     TestBed
 } from '@angular/core/testing';
-import
-{
+import {
     ConnectionBackend,
     XHRBackend,
     ResponseOptions,
@@ -14,8 +12,7 @@ import
     RequestOptions,
     BaseRequestOptions
 } from '@angular/http';
-import
-{
+import {
     MockBackend,
     MockConnection
 } from '@angular/http/testing/mock_backend';
@@ -29,28 +26,31 @@ import { LoginService } from './login.service';
 import { SecuredHttp } from './secured-http';
 
 
-export class MockSecuredHttpService extends Http implements SecuredHttp
-{
+export class MockSecuredHttpService extends Http implements SecuredHttp {
     authorizationToken: string;
+
+    setAuthorizationToken(token: string): void {
+        this.authorizationToken = token;
+    };
 }
 
-export function httpFactory(xhrBackend, requestOptions)
-{
+export function httpFactory(xhrBackend, requestOptions) {
     return new MockSecuredHttpService(xhrBackend, requestOptions);
 }
 
-describe('Login Service', () =>
-{
-    beforeEach(() =>
-    {
+describe('Login Service', () => {
+    beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [
-                { provide: SecuredHttp, 
-                    useFactory: httpFactory, 
-                    deps: [XHRBackend, RequestOptions] },
-                { 
-                    provide: RequestOptions, 
-                    useClass: BaseRequestOptions },
+                {
+                    provide: SecuredHttp,
+                    useFactory: httpFactory,
+                    deps: [XHRBackend, RequestOptions]
+                },
+                {
+                    provide: RequestOptions,
+                    useClass: BaseRequestOptions
+                },
                 {
                     provide: XHRBackend,
                     useClass: MockBackend
@@ -64,32 +64,30 @@ describe('Login Service', () =>
         });
     });
 
-    it(`should set authoriation header on Authorizations server call`, fakeAsync(
+    it(`should set authoriation header on login (/Authorizations) server call`, fakeAsync(
         inject([
             XHRBackend,
             LoginService
-        ], (mockBackend: MockBackend, loginService: LoginService) =>
-            {
-                let serverCalled: boolean = false
+        ], (mockBackend: MockBackend, loginService: LoginService) => {
+            let serverCalled: boolean = false
 
-                mockBackend.connections.subscribe(
-                    (connection: MockConnection) =>
-                    {
-                        serverCalled = true;
+            mockBackend.connections.subscribe(
+                (connection: MockConnection) => {
+                    serverCalled = true;
 
-                        expect(connection.request.headers.get('Authorization')).toBe("user:xxx");
-                        connection.mockRespond(new Response(new ResponseOptions({ body: ['xxx'] })));
-                    });
+                    expect(connection.request.headers.get('Authorization')).toBe("user:xxx");
+                    connection.mockRespond(new Response(new ResponseOptions({ body: ['xxx'] })));
+                });
 
-                loginService.login(
-                    'user',
-                    'xxx',
-                    () => { },
-                    () => { throw Error('Unkown login service error') }
-                );
+            loginService.login(
+                'user',
+                'xxx',
+                () => { },
+                () => { throw Error('Unkown login service error') }
+            );
 
-                expect(serverCalled).toEqual(true);
-            })
+            expect(serverCalled).toEqual(true);
+        })
     ));
 
     it(`should set authoriation token on Secured Http Service`, fakeAsync(
@@ -100,37 +98,28 @@ describe('Login Service', () =>
         ], (
             mockBackend: MockBackend,
             loginService: LoginService,
-            securedHttpService: SecuredHttp) =>
-            {
+            securedHttpService: SecuredHttp) => {
                 let expectedToken = "any-token";
-
-                expect(securedHttpService).not.toBeNull();
-                expect(securedHttpService.authorizationToken).toBeUndefined();
-
-                let serverCalled: boolean = false
+                
+                spyOn(securedHttpService, 'setAuthorizationToken');
 
                 mockBackend.connections.subscribe(
-                    (connection: MockConnection) =>
-                    {
-                        serverCalled = true;
-
+                    (connection: MockConnection) => {
                         let reponse = [
                             { token: expectedToken }
                         ];
 
                         connection.mockRespond(new Response(new ResponseOptions({ body: reponse })));
                     });
-                
+
                 loginService.login(
                     '',
                     '',
                     () => { },
                     () => { throw Error('Unkown login service error') }
                 );
-                
-                expect(securedHttpService.authorizationToken).toBe(expectedToken);
-                expect(serverCalled).toEqual(true);
+
+                expect(securedHttpService.setAuthorizationToken).toHaveBeenCalledWith(expectedToken);
             })
     ));
-
 });
