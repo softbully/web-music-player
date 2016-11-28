@@ -33,8 +33,8 @@ export class LoginService
             {
                 this.loggedIn = true;
                 this.token = data[0].token;
-                this.http.authorizationToken = this.token;
-
+                this.http.setAuthorizationToken(this.token);
+                
                 success(this.token);
             });
     }

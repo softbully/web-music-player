@@ -86,7 +86,7 @@ describe('Secured Http', () =>
                         connection.mockRespond(new Response(new ResponseOptions({ body: ['data'] })));
                     });
 
-                securedHttpService.authorizationToken = expectedToken;
+                SecuredHttpService.authorizationToken = expectedToken;
                 securedHttpService.get("http://no-url-needed");
 
                 expect(serverCalled).toEqual(true);
@@ -108,7 +108,7 @@ describe('Secured Http', () =>
                         connection.mockRespond(new Response(new ResponseOptions({ body: ['data'] })));
                     });
 
-                securedHttpService.authorizationToken = expectedToken;
+                SecuredHttpService.authorizationToken = expectedToken;
                 securedHttpService.get("http://no-url-needed", new RequestOptions({}));
 
                 expect(serverCalled).toEqual(true);
@@ -134,7 +134,7 @@ describe('Secured Http', () =>
                         connection.mockRespond(new Response(new ResponseOptions({ body: ['data'] })));
                     });
 
-                securedHttpService.authorizationToken = expectedToken;
+                SecuredHttpService.authorizationToken = expectedToken;
                 let headers = new Headers({ headerKey: originalHeaderValue });
 
                 securedHttpService.get("http://no-url-needed", new RequestOptions({ headers: headers }));
@@ -142,6 +142,7 @@ describe('Secured Http', () =>
                 expect(serverCalled).toEqual(true);
             })
     ));
+
     it(`should fail when calling request method directly with a string url`, fakeAsync(
         inject([
             XHRBackend,
