@@ -65,52 +65,26 @@ describe('Library Service', () => {
   }));
 
   it(`should load all artists`, fakeAsync(() => {
-    let expectedRequestUrl: string = '/Artists/';
+    expect(myLibraryTester.getActualUrlForMethod(myLibraryService.loadArtists))
+      .toEqual('/Artists/');
 
-    let actualRequestUrl = myLibraryTester.getActualUrlForMethod(myLibraryService.loadArtists);
-    expect(actualRequestUrl).toEqual(expectedRequestUrl);
-  }));
+    expect(myLibraryTester.getActualUrlForMethod(myLibraryService.loadAlbumsArtist, 25))
+      .toEqual('/Artists/25/Albums/');
 
-  it(`should load all albums from an artists`, fakeAsync(() => {
-    let expectedRequestUrl: string = '/Artists/25/Albums/';
-    let actualRequestUrl = myLibraryTester.getActualUrlForMethod(myLibraryService.loadAlbumsArtist, 25);
+    expect(myLibraryTester.getActualUrlForMethod(myLibraryService.loadSongsArtist, 25))
+      .toEqual('/Artists/25/Songs/');
 
-    expect(actualRequestUrl).toEqual(expectedRequestUrl);
-  }));
+    expect(myLibraryTester.getActualUrlForMethod(myLibraryService.loadSongsArtistAlbum, 25, 50))
+      .toEqual('/Artists/25/Albums/50/Songs/');
 
-  it(`should load all songs an artists`, fakeAsync(() => {
-    let expectedRequestUrl: string = '/Artists/25/Songs/';
-    let actualRequestUrl = myLibraryTester.getActualUrlForMethod(myLibraryService.loadSongsArtist, 25);
+    expect(myLibraryTester.getActualUrlForMethod(myLibraryService.loadAlbums))
+      .toEqual('/Albums/');
 
-    expect(actualRequestUrl).toEqual(expectedRequestUrl);
-  }));
+    expect(myLibraryTester.getActualUrlForMethod(myLibraryService.loadSongsAlbum, 25))
+      .toEqual('/Albums/25/Songs/');
 
-  it(`should load all songs from an albums from an artists`, fakeAsync(() => {
-    let expectedRequestUrl: string = '/Artists/25/Albums/50/Songs/';
-    let actualRequestUrl = myLibraryTester.getActualUrlForMethod(myLibraryService.loadSongsArtistAlbum, 25, 50);
-
-    expect(actualRequestUrl).toEqual(expectedRequestUrl);
-  }));
-
-  it(`should load all Albums`, fakeAsync(() => {
-    let expectedRequestUrl: string = '/Albums/';
-
-    let actualRequestUrl = myLibraryTester.getActualUrlForMethod(myLibraryService.loadAlbums);
-    expect(actualRequestUrl).toEqual(expectedRequestUrl);
-  }));
-
-  it(`should load all songs from an albums`, fakeAsync(() => {
-    let expectedRequestUrl: string = '/Albums/25/Songs/';
-    let actualRequestUrl = myLibraryTester.getActualUrlForMethod(myLibraryService.loadSongsAlbum, 25);
-
-    expect(actualRequestUrl).toEqual(expectedRequestUrl);
-  }));
-
-  it(`should load all artists`, fakeAsync(() => {
-    let expectedRequestUrl: string = '/Songs/';
-
-    let actualRequestUrl = myLibraryTester.getActualUrlForMethod(myLibraryService.loadAllSongs);
-    expect(actualRequestUrl).toEqual(expectedRequestUrl);
+    expect(myLibraryTester.getActualUrlForMethod(myLibraryService.loadAllSongs))
+      .toEqual('/Songs/');
   }));
 });
 
@@ -122,7 +96,6 @@ class LibraryTester {
     private mockBackEnd: MockBackend) { };
 
   getActualUrlForMethod(method: (...a: any[]) => Observable<any>, ...params: number[]) {
-
     let expectedRequestUrl: string = '/Songs/';
     let actualRequesyUrl: string;
 
