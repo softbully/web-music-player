@@ -1,0 +1,15 @@
+<p>
+  nav-panel works!
+</p>
+<ul>
+
+  <div class='panel-group'>
+    <div [@flyInOut] class='panel' *ngFor="let panelData of panels let i=index" [style.width]='calculatePanelWidth(i)'> 
+      <app-panel bind-data='panelData'></app-panel>
+    </div>
+  </div>
+
+</ul>
+
+<button on-click="newRandomPanel($event)">Add random panel</button>
+<button on-click="removeFirstPanel($event)">Remove last panel</button>

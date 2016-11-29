@@ -1,0 +1,10 @@
+.panel-group {
+    display: -webkit-flex;
+    display: flex;
+    border: 5px solid red;
+}
+
+.panel {
+    -webkit-transition: width .2s ease-in-out; /* Safari */
+    transition: width .2s ease-in-out;
+}

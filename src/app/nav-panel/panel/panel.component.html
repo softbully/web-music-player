@@ -1,0 +1,7 @@
+<div class='panel'>
+  <ul>
+    <li *ngFor="let item of data">Item: {{item}}</li>
+  </ul>
+
+  <div *ngIf="!data || data.length === 0">No data available</div>
+</div>
